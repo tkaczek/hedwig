@@ -74,7 +74,7 @@ public class Move {
 	
 	
 /**
- * returns the standard algebraic chess notation for the move
+ * @return the standard algebraic chess notation for the move
  * 
  */
 	public String toString(){

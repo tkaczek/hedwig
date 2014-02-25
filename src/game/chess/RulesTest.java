@@ -465,7 +465,7 @@ public class RulesTest {
 		assertTrue(cb.getRecord().getMove(4).isEnPassant());
 		//now we reverse this
 		cb.moveback();
-		System.out.println(cb.toString());
+		//System.out.println(cb.toString());
 		assertEquals('p', board[4][4].getChar()); //piece is "untaken"
 		assertEquals(4, cb.getRounds());
 		assertEquals('P' , board[5][4].getChar());
@@ -547,7 +547,7 @@ public class RulesTest {
 		//Check that no castle is possible when fields are attacked
 		cb.moveback();
 		board[4][1] = new Tower(false, cb);
-		System.out.println(cb.toString());
+		//System.out.println(cb.toString());
 		assertEquals(-1, cb.move(4, 0, 6, 0));
 		assertEquals(-1, cb.move(4, 0, 2, 0));
 		board[4][1] = null;

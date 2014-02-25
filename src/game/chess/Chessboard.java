@@ -10,11 +10,28 @@ import game.chess.pieces.*;
  * 
  */
 public class Chessboard extends Board {
+	/**
+	 * Representation of the board
+	 */
 	Piece[][] board = new Piece[8][8];
+	/**
+	 * number of rounds
+	 */
 	int rounds;
+	/**
+	 * Move history stored as a PartyRecord
+	 */
 	PartyRecord record;
-	boolean firstcheck;// firstCheck occured?
-	boolean check;// currently in Check?
+	
+	/**
+	 * true if a check situation has already occurred
+	 */
+	boolean firstcheck;
+	
+	/**
+	 * true if one player is currently in Check
+	 */
+	boolean check;
 
 	/**
 	 * 
@@ -38,17 +55,15 @@ public class Chessboard extends Board {
 				&& destX < 8 && destY < 8 && destX >= 0 && destY >= 0) {
 			int moveCode = board[x][y].move(x, y, destX, destY);
 			if (moveCode != -1) {
-				char piece;
 				char dest;
-				piece = board[x][y].getChar();
 				if (board[destX][destY] != null)
 					dest = board[destX][destY].getChar();
 				else
 					dest = '-';
 				board[destX][destY] = board[x][y];
 				board[x][y] = null;
-				boolean k = (moveCode == 2);
-				boolean q = (moveCode == 3);
+				boolean k = (moveCode == 2);	//king's castle
+				boolean q = (moveCode == 3);	//queen's caste
 				if (k) {
 					board[5][y] = board[7][y];
 					board[7][y] = null;
@@ -63,18 +78,18 @@ public class Chessboard extends Board {
 					dest= board[destX][y].getChar(); 
 					board[destX][y] = null;
 				}
-				boolean ccheck = check(rounds % 2 == 0); // white's turn? check
+				boolean ccheck = check(rounds % 2 == 0); 	// white's turn? check
 															// black is in
 															// check!
 				
 				boolean mate = checkForMate(rounds % 2 == 0);
 				if(mate) moveCode= 999;
-				record.addMove(rounds, new Move(x, y, piece, destX, destY,
+				record.addMove(rounds, new Move(x, y, board[x][y].getChar(), destX, destY,
 						dest, k, q, ep, ccheck, mate));
 				rounds++;
 				if (ccheck) {
 					check = true;
-					if (false)// check for mate
+					if (checkForMate(rounds % 2 == 0))// check for mate
 						mate = true;
 				} else
 					check = false;
@@ -130,28 +145,28 @@ public class Chessboard extends Board {
 			}
 			if (record.getMove(rounds - 1).getOrigFig() == 'N'
 					|| record.getMove(rounds - 1).getOrigFig() == 'n') {
-				Knight p = new Knight(record.getMove(-1).getOrigFig() == 'N',
+				Knight p = new Knight(record.getMove(rounds -1).getOrigFig() == 'N',
 						this);
 				board[record.getMove(rounds - 1).getOrigX()][record.getMove(
 						rounds - 1).getOrigY()] = p;
 			}
 			if (record.getMove(rounds - 1).getOrigFig() == 'Q'
 					|| record.getMove(rounds - 1).getOrigFig() == 'q') {
-				Queen p = new Queen(record.getMove(-1).getOrigFig() == 'Q',
+				Queen p = new Queen(record.getMove(rounds -1).getOrigFig() == 'Q',
 						this);
 				board[record.getMove(rounds - 1).getOrigX()][record.getMove(
 						rounds - 1).getOrigY()] = p;
 			}
 			if (record.getMove(rounds - 1).getOrigFig() == 'B'
 					|| record.getMove(rounds - 1).getOrigFig() == 'b') {
-				Bishop p = new Bishop(record.getMove(-1).getOrigFig() == 'B',
+				Bishop p = new Bishop(record.getMove(rounds -1).getOrigFig() == 'B',
 						this);
 				board[record.getMove(rounds - 1).getOrigX()][record.getMove(
 						rounds - 1).getOrigY()] = p;
 			}
 			if (record.getMove(rounds - 1).getOrigFig() == 'T'
 					|| record.getMove(rounds - 1).getOrigFig() == 't') {
-				Tower p = new Tower(record.getMove(-1).getOrigFig() == 'T',
+				Tower p = new Tower(record.getMove(rounds -1).getOrigFig() == 'T',
 						this);
 				board[record.getMove(rounds - 1).getOrigX()][record.getMove(
 						rounds - 1).getOrigY()] = p;
@@ -443,7 +458,7 @@ public class Chessboard extends Board {
 	}
 
 	/**
-	 * returns a String representation of the current Chessboard.
+	 * @return a String representation of the current Chessboard.
 	 */
 	public String toString() {
 		String b = "  ABCDEFGH\r";
